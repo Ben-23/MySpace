@@ -45,6 +45,24 @@ public class UserController:ControllerBase
         await _context.SaveChangesAsync();        
         return user;
     }
+    [HttpPost("login")]
+    public async Task<ActionResult<User>> Login(LoginDTO loginDTO)
+    {
+        var user= await _context.Users.FirstOrDefaultAsync(x=> x.UserName==loginDTO.Username);
+        if(user==null)
+            return Unauthorized("User doesn't Exists");
+        var hmac = new HMACSHA512
+        {
+            Key = user.PasswordSalt
+        };
+        var generatedhash= hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.Password));
+        for(int i=0;i<generatedhash.Length;i++)
+        {
+            if(generatedhash[i]!=user.PasswordHash[i])
+                return Unauthorized("Password is wrong");
+        }       
+        return user;
+    }
     public async Task<bool> ExistingUser(string userName)
     {
         return await _context.Users.AnyAsync(x=> x.UserName==userName.ToLower());
