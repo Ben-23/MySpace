@@ -1,6 +1,8 @@
 ﻿using API.Data;
 using API.Entity;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
@@ -25,4 +27,9 @@ public class UserController:ControllerBase
     {
         return await _context.Users.FindAsync(id);
     }
+    //[HttpPost("register")]
+    // public async Task<ActionResult<User>> Register()
+    // {
+        
+    // }
 }
