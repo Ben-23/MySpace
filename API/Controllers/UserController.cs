@@ -3,6 +3,7 @@ using System.Text;
 using API.Data;
 using API.DTO;
 using API.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -10,14 +11,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UserController:ControllerBase
 {
     readonly DataContext _context;
-    public UserController(DataContext context)
+    readonly ITokenService _tokenService;
+
+    public UserController(DataContext context,ITokenService tokenService)
     {
         _context=context;
+        _tokenService=tokenService;
     }
 
     [HttpGet]
@@ -30,8 +35,9 @@ public class UserController:ControllerBase
     {
         return await _context.Users.FindAsync(id);
     }
+    [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<ActionResult<User>> Register(RegisterDTO registerDTO)
+    public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDTO)
     {
         if(await ExistingUser(registerDTO.UserName))
             return BadRequest("Username Exists");
@@ -43,10 +49,15 @@ public class UserController:ControllerBase
         };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();        
-        return user;
+        return new UserDTO{
+            Username=user.UserName,
+            Token=_tokenService.CreateToken(user)
+            };
     }
+
+    [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<ActionResult<User>> Login(LoginDTO loginDTO)
+    public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
     {
         var user= await _context.Users.FirstOrDefaultAsync(x=> x.UserName==loginDTO.Username);
         if(user==null)
@@ -61,7 +72,10 @@ public class UserController:ControllerBase
             if(generatedhash[i]!=user.PasswordHash[i])
                 return Unauthorized("Password is wrong");
         }       
-        return user;
+        return new UserDTO{
+            Username=user.UserName,
+            Token=_tokenService.CreateToken(user)
+            };
     }
     public async Task<bool> ExistingUser(string userName)
     {
