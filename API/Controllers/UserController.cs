@@ -24,7 +24,8 @@ public class UserController:ControllerBase
         _context=context;
         _tokenService=tokenService;
     }
-
+    
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers()
     {
