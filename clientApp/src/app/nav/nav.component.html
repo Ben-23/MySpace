@@ -6,7 +6,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav me-auto mb-2 mb-md-0" *ngIf="loggedIn">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0" *ngIf="accountService.currentUser$ | async">
         <li class="nav-item">
           <a class="nav-link" href="#">Matches</a>
         </li>
@@ -17,21 +17,19 @@
           <a class="nav-link">Messages</a>
         </li>
       </ul>
-      <div class="btn-group" dropdown *ngIf="loggedIn">
-        <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle"
+      <div class="btn-group" dropdown *ngIf="accountService.currentUser$ | async">
+        <button id="button-basic" dropdownToggle type="button" class="btn btn-outline-success dropdown-toggle"
           aria-controls="dropdown-basic">
-          Button dropdown <span class="caret"></span>
+          Welcome user<span class="caret"></span>
         </button>
         <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-          <li role="menuitem"><a class="dropdown-item" href="#">Action</a></li>
-          <li role="menuitem"><a class="dropdown-item" href="#">Another action</a></li>
-          <li role="menuitem"><a class="dropdown-item" href="#">Something else here</a></li>
+          <li role="menuitem"><a class="dropdown-item" href="#">Edit Profile</a></li>
           <li class="divider dropdown-divider"></li>
           <li role="menuitem"><a class="dropdown-item" href="#" (click)="logout()">Logout</a>
           </li>
         </ul>
       </div>
-      <form class="d-flex" #loginForm="ngForm" (ngSubmit)="login()" *ngIf="!loggedIn">
+      <form class="d-flex" #loginForm="ngForm" (ngSubmit)="login()" *ngIf="!(accountService.currentUser$ | async)">
         <input name="username" [(ngModel)]="model.userName" class="form-control me-2" type="text"
           placeholder="Username">
         <input name="password" [(ngModel)]="model.password" class="form-control me-2" type="password"
