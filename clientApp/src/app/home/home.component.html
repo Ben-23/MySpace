@@ -1,1 +1,17 @@
-<p>home works!</p>
+<div class="container mt-5">
+    <div *ngIf="!registerMode">
+        <h1>Find your perfect match!</h1>
+        <p class="lead">Come on in, sign up</p>
+        <div class="text-center">
+            <button (click)="registerToggle()" class="btn btn-success me-2">Register</button>
+            <button class="btn btn-outline-success">Learn more</button>
+        </div>
+    </div>
+    <div class="container" *ngIf="registerMode">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <app-register></app-register>
+            </div>
+        </div>
+    </div>
+</div>
