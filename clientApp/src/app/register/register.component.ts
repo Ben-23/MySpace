@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { User } from '../_model/user';
 
 @Component({
@@ -6,11 +6,14 @@ import { User } from '../_model/user';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent {
+
+export class RegisterComponent implements OnInit {
+  @Input() userList: any;
   public model: any = {}
   constructor() {
 
   }
+
   ngOnInit(): void {
 
   }
