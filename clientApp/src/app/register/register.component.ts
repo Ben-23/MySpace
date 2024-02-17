@@ -9,7 +9,7 @@ import { AccountService } from '../_services/account.service';
 })
 
 export class RegisterComponent implements OnInit {
-  @Input() userList: any;
+  // @Input() userList: any;
   @Output() eventEmitter = new EventEmitter();
   public model: any = {}
   constructor(private accountService: AccountService) {
